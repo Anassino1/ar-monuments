@@ -1,6 +1,7 @@
 const URL = "./model/";
 let model, webcam;
 let scene, camera, renderer, loader, currentModel, currentClass = null;
+let loadingModelPromise = null;
 
 async function init() {
     // Load Teachable Machine model
@@ -65,19 +66,35 @@ async function predict() {
 
     if (highest.probability > 0.6) {
         document.getElementById("label").innerText = `Detected: ${highest.className}`;
-        if (highest.className !== currentClass) {
+
+        if (!currentModel || highest.className !== currentClass) {
             currentClass = highest.className;
             showModel(currentClass);
         }
     } else {
         document.getElementById("label").innerText = "No confident detection";
-        clearModel();
+
+        // Cancel current loading if any
         currentClass = null;
+        clearModel();
     }
 }
 
+
+// let currentModel = null;
+// let currentClass = null;
+let loadingModelClass = null; // track which class is being loaded
+
 function showModel(className) {
+    // If same class as current model, do nothing
+    if (currentClass === className) return;
+
+    // Remove old model immediately
     clearModel();
+
+    currentClass = className;
+    const thisLoadToken = ++currentLoadToken; // assign a new token for this load
+
     let modelPath = null;
     switch (className) {
         case "Koutoubia": modelPath = "./models/koutoubia.glb"; break;
@@ -90,6 +107,9 @@ function showModel(className) {
     loader.load(
         modelPath,
         (gltf) => {
+            // Only add this model if it's the latest load
+            if (thisLoadToken !== currentLoadToken) return;
+
             currentModel = gltf.scene;
             currentModel.name = className;
             currentModel.scale.set(1, 1, 1);
@@ -107,14 +127,17 @@ function clearModel() {
         currentModel.traverse((child) => {
             if (child.geometry) child.geometry.dispose();
             if (child.material) {
-                if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
-                else child.material.dispose();
+                if (Array.isArray(child.material)) {
+                    child.material.forEach(m => m.dispose());
+                } else {
+                    child.material.dispose();
+                }
             }
         });
         currentModel = null;
-        renderer.renderLists.dispose();
     }
 }
+
 
 init();
 

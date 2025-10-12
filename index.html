@@ -11,40 +11,40 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
    <style>
-html, body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden; /* prevent scrolling */
-    height: 100%;
-    width: 100%;
-    background: black;
-}
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            background: black;
+        }
 
-#webcam-container, #model-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
+        #webcam-container, #model-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+        }
 
-canvas {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: contain; /* fit exactly without cropping */
-    display: block;
-}
+        canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* fills screen without scroll */
+            display: block;
+        }
 
-#label {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 2;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-}
-</style>
+        #label {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 2;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
 
 
 </head>
