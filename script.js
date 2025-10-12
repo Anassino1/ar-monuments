@@ -8,8 +8,8 @@ async function init() {
     document.getElementById("label").innerText = "Model loaded!";
 
     // Setup webcam
-    const flip = true; // don't mirror back camera
-    webcam = new tmImage.Webcam(400, 300, flip);
+    const flip = false; // don't mirror back camera
+    webcam = new tmImage.Webcam(4000, 3000, flip);
 
     await webcam.setup({
         facingMode: "environment" // back camera
