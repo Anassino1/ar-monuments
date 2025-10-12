@@ -8,11 +8,13 @@ async function init() {
     document.getElementById("label").innerText = "Model loaded!";
 
     // Setup webcam
-    const flip = true;
-    webcam = new tmImage.Webcam(400, 300, flip);
+    // Setup webcam with back camera
+    const flip = false; // no need to flip the back camera
+    webcam = new tmImage.Webcam(400, 300, flip, { facingMode: "environment" });
     await webcam.setup();
     await webcam.play();
     document.getElementById("webcam").appendChild(webcam.canvas);
+
 
     // Setup Three.js
     initThreeJS();
