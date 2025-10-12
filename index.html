@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Webcam AR Recognition</title>
+
+    <!-- TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <!-- Teachable Machine -->
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.3/dist/teachablemachine-image.min.js"></script>
+
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <!-- GLTF Loader -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #000;
+            color: white;
+        }
+
+        #container {
+            position: relative;
+            width: 400px;
+            height: 300px;
+        }
+
+        /* Webcam canvas */
+        #webcam canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 400px;
+            height: 300px;
+            border-radius: 10px;
+        }
+
+        /* 3D overlay */
+        #model-container canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 400px;
+            height: 300px;
+            pointer-events: none; /* so webcam still works if interactive */
+        }
+    </style>
+</head>
+<body>
+    <h1>Webcam AR Recognition</h1>
+    <h2 id="label">Loading model...</h2>
+
+    <div id="container">
+        <div id="webcam"></div>
+        <div id="model-container"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
