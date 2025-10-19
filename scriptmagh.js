@@ -99,10 +99,10 @@ function showModel(className) {
 
     let modelPath = null;
     switch (className) {
-        case "Koutoubia": modelPath = "./models/koutoubia.glb"; break;
-        case "Hassan Tower": modelPath = "./models/hassan_tower.glb"; break;
-        case "Bab Mrissa": modelPath = "./models/bab_mrissa.glb"; break;
-        case "Bab al mansour": modelPath = "./models/bab_manssour.glb"; break;
+        case "Koutoubia": modelPath = "models/koutoubia.glb"; break;
+        case "Hassan Tower": modelPath = "models/hassan_tower.glb"; break;
+        case "Bab Mrissa": modelPath = "models/bab_mrissa.glb"; break;
+        case "Bab al mansour": modelPath = "models/bab_manssour.glb"; break;
         default: 
             console.warn("No model defined for:", className); 
             return;
