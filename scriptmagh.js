@@ -2,6 +2,7 @@ const URL = "./model/";
 let model, webcam;
 let scene, camera, renderer, loader, currentModel, currentClass = null;
 let loadingModelPromise = null;
+let currentLoadToken = 0;
 
 async function init() {
     // Load Teachable Machine model
@@ -63,9 +64,11 @@ async function loop() {
 async function predict() {
     const prediction = await model.predict(webcam.canvas);
     const highest = prediction.reduce((a, b) => (a.probability > b.probability ? a : b));
+    console.log("Prediction above threshold:", highest.className);
 
     if (highest.probability > 0.6) {
         document.getElementById("label").innerText = `Detected: ${highest.className}`;
+        console.log("detected");
 
         if (!currentModel || highest.className !== currentClass) {
             currentClass = highest.className;
@@ -86,8 +89,7 @@ async function predict() {
 let loadingModelClass = null; // track which class is being loaded
 
 function showModel(className) {
-    // If same class as current model, do nothing
-    if (currentClass === className) return;
+    console.log("Entering showModel for class:", className);
 
     // Remove old model immediately
     clearModel();
@@ -97,17 +99,21 @@ function showModel(className) {
 
     let modelPath = null;
     switch (className) {
-        // case "Koutoubia": modelPath = "./models/koutoubia.glb"; break;
+        case "Koutoubia": modelPath = "./models/koutoubia.glb"; break;
         case "Hassan Tower": modelPath = "./models/hassan_tower.glb"; break;
-        // case "Bab Mrissa": modelPath = "./models/bab_mrissa.glb"; break;
-        // case "Bab al mansour": modelPath = "./models/bab_manssour.glb"; break;
-        default: console.warn("No model defined for:", className); return;
+        case "Bab Mrissa": modelPath = "./models/bab_mrissa.glb"; break;
+        case "Bab al mansour": modelPath = "./models/bab_manssour.glb"; break;
+        default: 
+            console.warn("No model defined for:", className); 
+            return;
     }
+
+    console.log("Loading model from path:", modelPath);
 
     loader.load(
         modelPath,
-        
         (gltf) => {
+            console.log("Model loaded:", className);
             clearModel();
 
             // Only add this model if it's the latest load
@@ -143,73 +149,3 @@ function clearModel() {
 
 
 init();
-
-
-
-
-// const URL = "./model/"; // Path to your Teachable Machine model folder
-// let model, webcam;
-// // Three.js variables
-// let scene, camera, renderer, loader, currentModel;
-
-// function initThreeJS() {
-//     scene = new THREE.Scene();
-//     camera = new THREE.PerspectiveCamera(75, 400/300, 0.1, 1000);
-//     camera.position.z = 5;
-
-//     renderer = new THREE.WebGLRenderer({ alpha: true });
-//     renderer.setSize(400, 300);
-//     document.getElementById("model-container").appendChild(renderer.domElement);
-
-//     loader = new THREE.GLTFLoader();
-// }
-
-// function animateThreeJS() {
-//     if (currentModel) currentModel.rotation.y += 0.01; // optional rotation
-//     renderer.render(scene, camera);
-// }
-
-
-// async function init() {
-//     // Load the model
-//     model = await tmImage.load(URL + "model.json", URL + "metadata.json");
-//     document.getElementById("label").innerText = "Model loaded!";
-
-//     // Setup webcam
-//     const flip = true; // flip camera for selfie view
-//     webcam = new tmImage.Webcam(400, 300, flip); 
-//     await webcam.setup(); 
-//     await webcam.play();
-
-//     // Append the canvas (webcam feed) to the page
-//     document.getElementById("webcam").appendChild(webcam.canvas);
-
-//     // Start the loop
-//     window.requestAnimationFrame(loop);
-// }
-
-
-// async function loop() {
-//     webcam.update(); // update the webcam frame
-//     await predict();
-//     window.requestAnimationFrame(loop);
-// }
-
-// async function predict() {
-//     const prediction = await model.predict(webcam.canvas);
-//     let highest = prediction[0];
-//     for (let i = 1; i < prediction.length; i++) {
-//         if (prediction[i].probability > highest.probability) {
-//             highest = prediction[i];
-//         }
-//     }
-//     // If probability > 0.5, show label
-//     if (highest.probability > 0.5) {
-//         document.getElementById("label").innerText = `Detected: ${highest.className}`;
-//     } else {
-//         document.getElementById("label").innerText = "No confident detection";
-//     }
-// }
-
-// init();
-
