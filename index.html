@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AR Monuments</title>
+    <!-- TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.3/dist/teachablemachine-image.min.js"></script>
+
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+   <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+    /* 🔹 Fullscreen intro */
+#start-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, #000 0%, #111 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 999;
+  opacity: 1;
+  transition: opacity 1s ease-out;
+}
+
+/* 🔹 Image style */
+#intro-image {
+  width: 200px;
+  height: auto;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 188, 212, 0.6);
+}
+
+/* 🔹 Intro canvas */
+#intro-canvas {
+  width: 300px;
+  height: 300px;
+  background: transparent;
+}
+
+/* 🔹 Button */
+#start-btn {
+  margin-top: 20px;
+  padding: 15px 40px;
+  font-size: 18px;
+  border: none;
+  border-radius: 12px;
+  background: #00bcd4;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#start-btn:hover {
+  background: #0097a7;
+}
+
+/* 🔹 Fade out effect */
+.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            background: black;
+        }
+
+        #webcam-container, #model-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* fills screen without scroll */
+            display: block;
+        }
+
+        #label {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 2;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+
+
+</head>
+<body>
+    <div id="start-screen">
+    <img id="intro-image" src="images/magh.jpg" alt="Maghribinaya Logo">
+    <canvas id="intro-canvas"></canvas>
+    <button id="start-btn">Start Experience</button>
+  </div>
+
+  <!-- 🔹 AR Containers (hidden at first) -->
+  <div id="webcam-container" style="display: none;"></div>
+  <div id="model-container" style="display: none;"></div>
+  <div id="label" style="display: none;">Loading...</div>
+
+  <script src="scriptmagh.js"></script>
+</body>
+</html>
+
+
+
