@@ -101,13 +101,26 @@
             background: black;
         }
 
-        #webcam-container, #model-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-        }
+        #webcam-container,
+#model-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 150vw;
+  height: 150vh;
+  overflow: hidden;
+  z-index: 1;
+}
+
+#webcam-container canvas,
+#model-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 150%;
+  height: 150%;
+  object-fit: cover;
+}
 
         canvas {
             width: 100%;
