@@ -14,7 +14,7 @@
     @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
     /* 🔹 Fullscreen intro */
-#start-screen {
+/* #start-screen {
   position: fixed;
   top: 0; left: 0;
   width: 100vw;
@@ -28,16 +28,39 @@
   z-index: 999;
   opacity: 1;
   transition: opacity 1s ease-out;
+} */
+
+/* 🔹 Background image for intro screen */
+#start-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("images/magh.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 999;
+  opacity: 1;
+  transition: opacity 1s ease-out;
 }
 
-/* 🔹 Image style */
-#intro-image {
-  width: 200px;
-  height: auto;
-  margin-bottom: 20px;
-  border-radius: 16px;
-  box-shadow: 0 0 20px rgba(0, 188, 212, 0.6);
+/* Optional overlay for better text contrast */
+#start-screen::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* dark transparent overlay */
+  z-index: -1;
 }
+
 
 /* 🔹 Intro canvas */
 #intro-canvas {
@@ -108,7 +131,7 @@
 </head>
 <body>
     <div id="start-screen">
-    <img id="intro-image" src="images/magh.jpg" alt="Maghribinaya Logo">
+    <!-- <img id="intro-image" src="images/magh.jpg" alt="Maghribinaya Logo"> -->
     <canvas id="intro-canvas"></canvas>
     <button id="start-btn">Start Experience</button>
   </div>
