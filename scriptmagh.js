@@ -148,58 +148,58 @@ function clearModel() {
 }
 
 // --- INTRO CANVAS ANIMATION --- //
-window.addEventListener("DOMContentLoaded", () => {
-  const introCanvas = document.getElementById("intro-canvas");
-  const ctx = introCanvas.getContext("2d");
-  let t = 0;
+// window.addEventListener("DOMContentLoaded", () => {
+//   const introCanvas = document.getElementById("intro-canvas");
+//   const ctx = introCanvas.getContext("2d");
+//   let t = 0;
 
-  function animateIntro() {
-    const w = introCanvas.width = 300;
-    const h = introCanvas.height = 300;
-    ctx.clearRect(0, 0, w, h);
+//   function animateIntro() {
+//     const w = introCanvas.width = 300;
+//     const h = introCanvas.height = 300;
+//     ctx.clearRect(0, 0, w, h);
 
-    // Subtle glowing circle
-    ctx.fillStyle = "rgba(255,255,255,0.1)";
-    ctx.beginPath();
-    const r = 100 + 20 * Math.sin(t);
-    ctx.arc(w / 2, h / 2, r, 0, Math.PI * 2);
-    ctx.fill();
+//     // Subtle glowing circle
+//     ctx.fillStyle = "rgba(255,255,255,0.1)";
+//     ctx.beginPath();
+//     const r = 100 + 20 * Math.sin(t);
+//     ctx.arc(w / 2, h / 2, r, 0, Math.PI * 2);
+//     ctx.fill();
 
-    // Title text
-    ctx.fillStyle = "#00bcd4";
-    ctx.font = "20px sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText("Maghribinaya", w / 2, h / 2 + 5);
+//     // Title text
+//     ctx.fillStyle = "#00bcd4";
+//     ctx.font = "20px sans-serif";
+//     ctx.textAlign = "center";
+//     ctx.fillText("Maghribinaya", w / 2, h / 2 + 5);
 
-    t += 0.05;
-    requestAnimationFrame(animateIntro);
-  }
+//     t += 0.05;
+//     requestAnimationFrame(animateIntro);
+//   }
 
-  animateIntro();
-});
+//   animateIntro();
+// });
 
 
-const introCanvas = document.getElementById("intro-canvas");
-const ctx = introCanvas.getContext("2d");
-let t = 0;
+// const introCanvas = document.getElementById("intro-canvas");
+// const ctx = introCanvas.getContext("2d");
+// let t = 0;
 
-function animateIntro() {
-  const w = introCanvas.width = 300;
-  const h = introCanvas.height = 300;
-  ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = "rgba(255,255,255,0.1)";
-  ctx.beginPath();
-  const r = 100 + 20 * Math.sin(t);
-  ctx.arc(w / 2, h / 2, r, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "#00bcd4";
-  ctx.font = "20px sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText("Maghribinaya", w / 2, h / 2 + 5);
-  t += 0.05;
-  requestAnimationFrame(animateIntro);
-}
-animateIntro();
+// function animateIntro() {
+//   const w = introCanvas.width = 300;
+//   const h = introCanvas.height = 300;
+//   ctx.clearRect(0, 0, w, h);
+//   ctx.fillStyle = "rgba(255,255,255,0.1)";
+//   ctx.beginPath();
+//   const r = 100 + 20 * Math.sin(t);
+//   ctx.arc(w / 2, h / 2, r, 0, Math.PI * 2);
+//   ctx.fill();
+//   ctx.fillStyle = "#00bcd4";
+//   ctx.font = "20px sans-serif";
+//   ctx.textAlign = "center";
+//   ctx.fillText("Maghribinaya", w / 2, h / 2 + 5);
+//   t += 0.05;
+//   requestAnimationFrame(animateIntro);
+// }
+// animateIntro();
 
 document.getElementById("start-btn").addEventListener("click", async () => {
   const startScreen = document.getElementById("start-screen");
