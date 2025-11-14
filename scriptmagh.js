@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const URL = "./ainaadi/";
+=======
+const URL = "./model/";
+>>>>>>> 38c5e49c25dbc545d752be6fec88caa280f0975d
 let model, webcam;
 let scene, camera, renderer, loader, currentModel, currentClass = null;
 let loadingModelPromise = null;
@@ -83,6 +87,7 @@ async function predict() {
     }
 }
 
+<<<<<<< HEAD
 window.addEventListener('resize', () => {
   if (camera && renderer) {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -96,6 +101,11 @@ window.addEventListener('resize', () => {
 });
 
 
+=======
+
+// let currentModel = null;
+// let currentClass = null;
+>>>>>>> 38c5e49c25dbc545d752be6fec88caa280f0975d
 let loadingModelClass = null; // track which class is being loaded
 
 function showModel(className) {
@@ -111,7 +121,12 @@ function showModel(className) {
     switch (className) {
         case "Koutoubia": modelPath = "models/koutoubia.glb"; break;
         case "Hassan Tower": modelPath = "models/hassan_tower.glb"; break;
+<<<<<<< HEAD
         case "This object isn’t part of Maghribinaya’s monuments": modelPath = "models/bab_mrissa.glb"; break;
+=======
+        case "Bab Mrissa": modelPath = "models/bab_mrissa.glb"; break;
+        case "Bab al mansour": modelPath = "models/bab_manssour.glb"; break;
+>>>>>>> 38c5e49c25dbc545d752be6fec88caa280f0975d
         default: 
             console.warn("No model defined for:", className); 
             return;
@@ -156,6 +171,62 @@ function clearModel() {
     }
 }
 
+<<<<<<< HEAD
+=======
+// --- INTRO CANVAS ANIMATION --- //
+// window.addEventListener("DOMContentLoaded", () => {
+//   const introCanvas = document.getElementById("intro-canvas");
+//   const ctx = introCanvas.getContext("2d");
+//   let t = 0;
+
+//   function animateIntro() {
+//     const w = introCanvas.width = 300;
+//     const h = introCanvas.height = 300;
+//     ctx.clearRect(0, 0, w, h);
+
+//     // Subtle glowing circle
+//     ctx.fillStyle = "rgba(255,255,255,0.1)";
+//     ctx.beginPath();
+//     const r = 100 + 20 * Math.sin(t);
+//     ctx.arc(w / 2, h / 2, r, 0, Math.PI * 2);
+//     ctx.fill();
+
+//     // Title text
+//     ctx.fillStyle = "#00bcd4";
+//     ctx.font = "20px sans-serif";
+//     ctx.textAlign = "center";
+//     ctx.fillText("Maghribinaya", w / 2, h / 2 + 5);
+
+//     t += 0.05;
+//     requestAnimationFrame(animateIntro);
+//   }
+
+//   animateIntro();
+// });
+
+
+// const introCanvas = document.getElementById("intro-canvas");
+// const ctx = introCanvas.getContext("2d");
+// let t = 0;
+
+// function animateIntro() {
+//   const w = introCanvas.width = 300;
+//   const h = introCanvas.height = 300;
+//   ctx.clearRect(0, 0, w, h);
+//   ctx.fillStyle = "rgba(255,255,255,0.1)";
+//   ctx.beginPath();
+//   const r = 100 + 20 * Math.sin(t);
+//   ctx.arc(w / 2, h / 2, r, 0, Math.PI * 2);
+//   ctx.fill();
+//   ctx.fillStyle = "#00bcd4";
+//   ctx.font = "20px sans-serif";
+//   ctx.textAlign = "center";
+//   ctx.fillText("Maghribinaya", w / 2, h / 2 + 5);
+//   t += 0.05;
+//   requestAnimationFrame(animateIntro);
+// }
+// animateIntro();
+>>>>>>> 38c5e49c25dbc545d752be6fec88caa280f0975d
 
 document.getElementById("start-btn").addEventListener("click", async () => {
   const startScreen = document.getElementById("start-screen");
