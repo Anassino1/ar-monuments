@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AR Monuments</title>
+    <!-- TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.3/dist/teachablemachine-image.min.js"></script>
+
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+   <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+
+/* 🔹 Background image for intro screen */
+#start-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("images/magh.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 999;
+  opacity: 1;
+  transition: opacity 1s ease-out;
+}
+
+/* Optional overlay for better text contrast */
+#start-screen::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* dark transparent overlay */
+  z-index: -1;
+}
+
+
+/* 🔹 Intro canvas */
+#intro-canvas {
+  width: 300px;
+  height: 300px;
+  background: transparent;
+}
+
+/* 🔹 Button */
+#start-btn {
+  position: relative;
+  padding: 20px 50px;
+  font-size: 20px;
+  font-family: "Poppins", sans-serif;
+  color: #00bcd4;
+  background: transparent;
+  border: 2px solid #00bcd4;
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+#start-btn::before {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 200%; height: 200%;
+  background: rgba(0, 188, 212, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.5);
+  opacity: 0.7;
+  animation: pulse 2s infinite;
+  z-index: -1;
+}
+
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.5; }
+  50% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.5; }
+}
+
+#start-btn:hover {
+  color: white;
+  border-color: #0097a7;
+}
+
+
+/* 🔹 Fade out effect */
+.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            background: black;
+        }
+
+        #webcam-container,
+#model-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 1;
+}
+
+#webcam-container canvas,
+#model-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* fills screen without scroll */
+            display: block;
+        }
+
+        #label {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 2;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+
+
+</head>
+<body>
+    <div id="start-screen">
+    <canvas id="intro-canvas"></canvas>
+    <button id="start-btn">Start Experience</button>
+  </div>
+
+  <!-- 🔹 AR Containers (hidden at first) -->
+  <div id="webcam-container" style="display: none;"></div>
+  <div id="model-container" style="display: none;"></div>
+  <div id="label" style="display: none;">Loading...</div>
+
+  <script src="scriptmagh.js"></script>
+</body>
+</html>
+
+
+
