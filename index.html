@@ -13,6 +13,22 @@
    <style>
     @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
+    /* 🔹 Fullscreen intro */
+/* #start-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, #000 0%, #111 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 999;
+  opacity: 1;
+  transition: opacity 1s ease-out;
+} */
 
 /* 🔹 Background image for intro screen */
 #start-screen {
@@ -108,27 +124,26 @@
             background: black;
         }
 
- #webcam-container,
+        #webcam-container,
 #model-container {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
+  z-index: 1;
 }
 
 #webcam-container canvas,
 #model-container canvas {
-  width: 100% !important;
-  height: 100% !important;
   position: absolute;
   top: 0;
   left: 0;
-  object-fit: cover !important;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-
 
         canvas {
             width: 100%;
@@ -152,6 +167,7 @@
 </head>
 <body>
     <div id="start-screen">
+    <!-- <img id="intro-image" src="images/magh.jpg" alt="Maghribinaya Logo"> -->
     <canvas id="intro-canvas"></canvas>
     <button id="start-btn">Start Experience</button>
   </div>
