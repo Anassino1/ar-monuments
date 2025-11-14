@@ -1,4 +1,5 @@
-const URL = "./ainaadi/";
+const URL = "https://raw.githubusercontent.com/Anassino1/ar-monuments/main/ainaadi/";
+
 let model, webcam;
 let scene, camera, renderer, loader, currentModel, currentClass = null;
 let loadingModelPromise = null;
