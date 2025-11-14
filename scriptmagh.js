@@ -112,9 +112,9 @@ function showModel(className) {
         case "Koutoubia": modelPath = "models/koutoubia.glb"; break;
         case "Hassan Tower": modelPath = "models/hassan_tower.glb"; break;
         case "This object isn’t part of Maghribinaya’s monuments": modelPath = "models/bab_mrissa.glb"; break;
-        default: 
-            console.warn("No model defined for:", className); 
-            return;
+        // default: 
+        //     console.warn("No model defined for:", className); 
+        //     return;
     }
 
     console.log("Loading model from path:", modelPath);
