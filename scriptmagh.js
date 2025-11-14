@@ -32,8 +32,8 @@ document.getElementById("webcam-container").appendChild(webcam.canvas);
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
-        webcam.canvas.width = window.innerWidth;
-        webcam.canvas.height = window.innerHeight;
+        // webcam.canvas.width = window.innerWidth;
+        // webcam.canvas.height = window.innerHeight;
     });
 
     // Start loop
