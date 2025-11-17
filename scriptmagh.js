@@ -99,13 +99,13 @@ function showModel(className) {
 let modelPath = null;
 switch (className) {
     case "Koutoubia": 
-        modelPath = "./models/koutoubia.glb"; 
+        modelPath = "https://anassino1.github.io/ar-monuments/models/koutoubia.glb"; 
         break;
     case "Hassan Tower": 
-        modelPath = "./models/hassan_tower.glb"; 
+        modelPath = "https://anassino1.github.io/ar-monuments/models/hassan_tower.glb"; 
         break;
     case "This object isn't part of Maghribinaya's monuments": 
-        modelPath = "./models/hassan_tower.glb"; 
+        modelPath = "/https://anassino1.github.io/ar-monuments/models/koutoubia.glb"; 
         break;
     default: 
         console.warn("No model defined for:", className); 
