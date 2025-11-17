@@ -11,13 +11,19 @@ async function init() {
     document.getElementById("label").innerText = "Model loaded!";
 
     // Webcam setup ONE TIME only
-    webcam = new tmImage.Webcam(window.innerWidth, window.innerHeight, false);
 
-    await webcam.setup({
-        facingMode: { ideal: "environment" },
-        width: { ideal: window.innerWidth },
-        height: { ideal: window.innerHeight }
-    });
+const screenRatio = window.innerWidth / window.innerHeight;
+const camWidth = 640;
+const camHeight = Math.round(camWidth / screenRatio);
+
+webcam = new tmImage.Webcam(camWidth, camHeight, false);
+
+await webcam.setup({
+    facingMode: { ideal: "environment" },
+    width: { ideal: camWidth },
+    height: { ideal: camHeight }
+});
+
 
     await webcam.play();
 
@@ -36,6 +42,14 @@ async function init() {
 
     window.requestAnimationFrame(loop);
 }
+
+function setStartScreenHeight() {
+  const startScreen = document.getElementById("start-screen");
+  startScreen.style.height = window.innerHeight + "px";
+}
+setStartScreenHeight();
+window.addEventListener("resize", setStartScreenHeight);
+window.addEventListener("orientationchange", setStartScreenHeight);
 
 
 function initThreeJS() {
