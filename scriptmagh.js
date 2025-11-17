@@ -10,44 +10,33 @@ async function init() {
     model = await tmImage.load(URL + "model.json", URL + "metadata.json");
     document.getElementById("label").innerText = "Model loaded!";
 
-    // Setup full-screen webcam (back camera)
-    const flip = false; // do not flip back camera
-// Use the full window size
+    // Webcam setup ONE TIME only
+    webcam = new tmImage.Webcam(window.innerWidth, window.innerHeight, false);
 
-webcam = new tmImage.Webcam(window.innerWidth, window.innerHeight, false);
+    await webcam.setup({
+        facingMode: { ideal: "environment" },
+        width: { ideal: window.innerWidth },
+        height: { ideal: window.innerHeight }
+    });
 
-await webcam.setup({
-    facingMode: { ideal: "environment" },
-    width: { ideal: 640 },
-    height: { ideal: 480 }
-});
+    await webcam.play();
 
+    document.getElementById("webcam-container").appendChild(webcam.canvas);
+    webcam.webcam.setAttribute("playsinline", true);
 
-await webcam.play();
-document.getElementById("webcam-container").appendChild(webcam.canvas);
-webcam.webcam.setAttribute("playsinline", true);
-
-// // Optional: update renderer to match screen
-// renderer.setSize(window.innerWidth, window.innerHeight);
-// camera.aspect = window.innerWidth / window.innerHeight;
-// camera.updateProjectionMatrix();
-
-
-    // Setup Three.js
+    // Three.js setup
     initThreeJS();
 
-    // Handle screen resize
+    // Resize
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
-        // webcam.canvas.width = window.innerWidth;
-        // webcam.canvas.height = window.innerHeight;
     });
 
-    // Start loop
     window.requestAnimationFrame(loop);
 }
+
 
 function initThreeJS() {
     scene = new THREE.Scene();
