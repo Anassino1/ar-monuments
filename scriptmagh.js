@@ -1,4 +1,4 @@
-const URL = "https://raw.githubusercontent.com/Anassino1/ar-monuments/main/ainaadi/";
+const URL = "./ainaadi/";
 
 let model, webcam;
 let scene, camera, renderer, loader, currentModel, currentClass = null;
@@ -13,10 +13,8 @@ async function init() {
     // Setup full-screen webcam (back camera)
     const flip = false; // do not flip back camera
 // Use the full window size
-const WIDTH = 640;
-const HEIGHT = 480;
 
-webcam = new tmImage.Webcam(WIDTH, HEIGHT, false);
+webcam = new tmImage.Webcam(window.innerWidth, window.innerHeight, false);
 
 await webcam.setup({
     facingMode: { ideal: "environment" },
@@ -25,7 +23,6 @@ await webcam.setup({
 });
 
 
-await webcam.setup({ facingMode: "environment" });
 await webcam.play();
 document.getElementById("webcam-container").appendChild(webcam.canvas);
 webcam.webcam.setAttribute("playsinline", true);
