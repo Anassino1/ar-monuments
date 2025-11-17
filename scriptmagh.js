@@ -13,22 +13,25 @@ async function init() {
     // Webcam setup ONE TIME only
 
 // const screenRatio = window.innerWidth / window.innerHeight;
-const camWidth = window.innerWidth;
-const camHeight = window.innerHeight;
+const screenWidth = window.innerWidth;
+const screenHeight = window.innerHeight;
 
-webcam = new tmImage.Webcam(camWidth, camHeight, false);
+webcam = new tmImage.Webcam(screenWidth, screenHeight, false);
 
 await webcam.setup({
-    facingMode: { ideal: "environment" },
-    width: { ideal: camWidth },
-    height: { ideal: camHeight }
+  facingMode: { ideal: "environment" },
+  width: { ideal: screenWidth },
+  height: { ideal: screenHeight }
 });
 
+await webcam.play();
 
-    await webcam.play();
+webcam.canvas.width = screenWidth;
+webcam.canvas.height = screenHeight;
+webcam.webcam.setAttribute("playsinline", true);
+document.getElementById("webcam-container").appendChild(webcam.canvas);
 
-    document.getElementById("webcam-container").appendChild(webcam.canvas);
-    webcam.webcam.setAttribute("playsinline", true);
+
 
     // Three.js setup
     initThreeJS();
