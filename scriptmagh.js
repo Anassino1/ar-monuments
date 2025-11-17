@@ -12,9 +12,9 @@ async function init() {
 
     // Webcam setup ONE TIME only
 
-const screenRatio = window.innerWidth / window.innerHeight;
-const camWidth = 640;
-const camHeight = Math.round(camWidth / screenRatio);
+// const screenRatio = window.innerWidth / window.innerHeight;
+const camWidth = window.innerWidth;
+const camHeight = window.innerHeight;
 
 webcam = new tmImage.Webcam(camWidth, camHeight, false);
 
