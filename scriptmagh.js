@@ -30,27 +30,24 @@ await webcam.setup({
 
 await webcam.play();
 
-// Remove TM constraints
+// FORCE full screen
 webcam.webcam.width = window.innerWidth;
 webcam.webcam.height = window.innerHeight;
 webcam.canvas.width = window.innerWidth;
 webcam.canvas.height = window.innerHeight;
 
-// Force full screen display
 webcam.canvas.style.width = "100vw";
 webcam.canvas.style.height = "100vh";
-webcam.canvas.style.objectFit = "cover"; // better than fill
+webcam.canvas.style.objectFit = "cover";   // ONLY THIS
 
 
-await webcam.play();
 
-webcam.canvas.width = screenWidth;
-webcam.canvas.height = screenHeight;
+
 
 // Force full-screen video feed on mobile
-webcam.canvas.style.width = "100vw";
-webcam.canvas.style.height = "100vh";
-webcam.canvas.style.objectFit = "fill";
+// webcam.canvas.style.width = "100vw";
+// webcam.canvas.style.height = "100vh";
+// webcam.canvas.style.objectFit = "fill";
 
 webcam.webcam.setAttribute("playsinline", true);
 document.getElementById("webcam-container").appendChild(webcam.canvas);
