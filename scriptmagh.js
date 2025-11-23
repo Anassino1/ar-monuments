@@ -2,80 +2,66 @@ const URL = "./ainaadi/";
 
 let model, webcam;
 let scene, camera, renderer, loader, currentModel, currentClass = null;
-let loadingModelPromise = null;
 let currentLoadToken = 0;
 
+// --- INIT FUNCTION ---
 async function init() {
     // Load Teachable Machine model
     model = await tmImage.load(URL + "model.json", URL + "metadata.json");
     document.getElementById("label").innerText = "Model loaded!";
 
-    // Webcam setup ONE TIME only
+    // Webcam setup
+    webcam = new tmImage.Webcam(window.innerWidth, window.innerHeight, false);
+    await webcam.setup({
+        facingMode: { ideal: "environment" },
+        video: { width: window.innerWidth, height: window.innerHeight }
+    });
+    await webcam.play();
 
-// const screenRatio = window.innerWidth / window.innerHeight;
-const screenWidth = window.innerWidth;
-const screenHeight = window.innerHeight;
+    // Make video and canvas cover screen
+    const video = webcam.webcam;
+    const canvas = webcam.canvas;
 
-webcam = new tmImage.Webcam(window.innerWidth, window.innerHeight, false);
-
-// FORCE the video feed to match the screen exactly
-await webcam.setup({
-  facingMode: { ideal: "environment" },
-  video: {
-    width: window.innerWidth,
-    height: window.innerHeight,
-    aspectRatio: window.innerWidth / window.innerHeight
-  }
-});
-
-await webcam.play();
-
-// FORCE full screen
-webcam.webcam.width = window.innerWidth;
-webcam.webcam.height = window.innerHeight;
-webcam.canvas.width = window.innerWidth;
-webcam.canvas.height = window.innerHeight;
-
-webcam.canvas.style.width = "100vw";
-webcam.canvas.style.height = "100vh";
-webcam.canvas.style.objectFit = "cover";   // ONLY THIS
-
-
-
-
-
-// Force full-screen video feed on mobile
-// webcam.canvas.style.width = "100vw";
-// webcam.canvas.style.height = "100vh";
-// webcam.canvas.style.objectFit = "fill";
-
-webcam.webcam.setAttribute("playsinline", true);
-document.getElementById("webcam-container").appendChild(webcam.canvas);
-
-
-
-    // Three.js setup
-    initThreeJS();
-
-    // Resize
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+    [video, canvas].forEach(el => {
+        el.style.position = "absolute";
+        el.style.top = "0";
+        el.style.left = "0";
+        el.style.width = "100%";
+        el.style.height = "100%";
+        el.style.objectFit = "cover";
+        el.style.objectPosition = "center center";
+        el.setAttribute("playsinline", true);
     });
 
+    const container = document.getElementById("webcam-container");
+    container.innerHTML = "";
+    container.appendChild(video);
+    container.appendChild(canvas);
+
+    // Initialize Three.js
+    initThreeJS();
+
+    // Handle resizing
+    window.addEventListener("resize", onWindowResize);
+    window.addEventListener("orientationchange", onWindowResize);
+
+    // Start AR loop
     window.requestAnimationFrame(loop);
 }
 
-function setStartScreenHeight() {
-  const startScreen = document.getElementById("start-screen");
-  startScreen.style.height = window.innerHeight + "px";
+// --- RESIZE HANDLER ---
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    webcam.canvas.width = window.innerWidth;
+    webcam.canvas.height = window.innerHeight;
+    webcam.webcam.width = window.innerWidth;
+    webcam.webcam.height = window.innerHeight;
 }
-setStartScreenHeight();
-window.addEventListener("resize", setStartScreenHeight);
-window.addEventListener("orientationchange", setStartScreenHeight);
 
-
+// --- THREE.JS SETUP ---
 function initThreeJS() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -91,6 +77,7 @@ function initThreeJS() {
     scene.add(light);
 }
 
+// --- MAIN LOOP ---
 async function loop() {
     webcam.update();
     await predict();
@@ -98,70 +85,50 @@ async function loop() {
     window.requestAnimationFrame(loop);
 }
 
+// --- PREDICTION ---
 async function predict() {
     const prediction = await model.predict(webcam.canvas);
     const highest = prediction.reduce((a, b) => (a.probability > b.probability ? a : b));
-    console.log("Prediction above threshold:", highest.className);
 
     if (highest.probability > 0.6) {
         document.getElementById("label").innerText = `Detected: ${highest.className}`;
-        console.log("detected");
-
         if (!currentModel || highest.className !== currentClass) {
             currentClass = highest.className;
             showModel(currentClass);
         }
     } else {
         document.getElementById("label").innerText = "No confident detection";
-
-        // Cancel current loading if any
         currentClass = null;
         clearModel();
     }
 }
 
-
-// let currentModel = null;
-// let currentClass = null;
-let loadingModelClass = null; // track which class is being loaded
-
+// --- LOAD 3D MODEL ---
 function showModel(className) {
-    console.log("Entering showModel for class:", className);
-
-    // Remove old model immediately
     clearModel();
-
     currentClass = className;
-    const thisLoadToken = ++currentLoadToken; // assign a new token for this load
+    const thisLoadToken = ++currentLoadToken;
 
-let modelPath = null;
-switch (className) {
-    case "Koutoubia": 
-        modelPath = "https://anassino1.github.io/ar-monuments/models/koutoubia.glb"; 
-        break;
-    case "Hassan Tower": 
-        modelPath = "https://anassino1.github.io/ar-monuments/models/hassan_tower.glb"; 
-        break;
-    case "This object isn't part of Maghribinaya's monuments": 
-        modelPath = "/https://anassino1.github.io/ar-monuments/models/koutoubia.glb"; 
-        break;
-    default: 
-        console.warn("No model defined for:", className); 
-        return;
-}
-
-
-    console.log("Loading model from path:", modelPath);
+    let modelPath = null;
+    switch (className) {
+        case "Koutoubia": 
+            modelPath = "https://anassino1.github.io/ar-monuments/models/koutoubia.glb"; 
+            break;
+        case "Hassan Tower": 
+            modelPath = "https://anassino1.github.io/ar-monuments/models/hassan_tower.glb"; 
+            break;
+        case "This object isn't part of Maghribinaya's monuments": 
+            modelPath = "https://anassino1.github.io/ar-monuments/models/koutoubia.glb"; 
+            break;
+        default: 
+            console.warn("No model defined for:", className); 
+            return;
+    }
 
     loader.load(
         modelPath,
         (gltf) => {
-            console.log("Model loaded:", className);
-            clearModel();
-
-            // Only add this model if it's the latest load
-            if (thisLoadToken !== currentLoadToken) return;
-
+            if (thisLoadToken !== currentLoadToken) return; // ignore outdated loads
             currentModel = gltf.scene;
             currentModel.name = className;
             currentModel.scale.set(1, 1, 1);
@@ -173,91 +140,35 @@ switch (className) {
     );
 }
 
+// --- CLEAR CURRENT MODEL ---
 function clearModel() {
-    if (currentModel) {
-        scene.remove(currentModel);
-        currentModel.traverse((child) => {
-            if (child.geometry) child.geometry.dispose();
-            if (child.material) {
-                if (Array.isArray(child.material)) {
-                    child.material.forEach(m => m.dispose());
-                } else {
-                    child.material.dispose();
-                }
+    if (!currentModel) return;
+    scene.remove(currentModel);
+    currentModel.traverse((child) => {
+        if (child.geometry) child.geometry.dispose();
+        if (child.material) {
+            if (Array.isArray(child.material)) {
+                child.material.forEach(m => m.dispose());
+            } else {
+                child.material.dispose();
             }
-        });
-        currentModel = null;
-    }
+        }
+    });
+    currentModel = null;
 }
 
-// --- INTRO CANVAS ANIMATION --- //
-// window.addEventListener("DOMContentLoaded", () => {
-//   const introCanvas = document.getElementById("intro-canvas");
-//   const ctx = introCanvas.getContext("2d");
-//   let t = 0;
-
-//   function animateIntro() {
-//     const w = introCanvas.width = 300;
-//     const h = introCanvas.height = 300;
-//     ctx.clearRect(0, 0, w, h);
-
-//     // Subtle glowing circle
-//     ctx.fillStyle = "rgba(255,255,255,0.1)";
-//     ctx.beginPath();
-//     const r = 100 + 20 * Math.sin(t);
-//     ctx.arc(w / 2, h / 2, r, 0, Math.PI * 2);
-//     ctx.fill();
-
-//     // Title text
-//     ctx.fillStyle = "#00bcd4";
-//     ctx.font = "20px sans-serif";
-//     ctx.textAlign = "center";
-//     ctx.fillText("Maghribinaya", w / 2, h / 2 + 5);
-
-//     t += 0.05;
-//     requestAnimationFrame(animateIntro);
-//   }
-
-//   animateIntro();
-// });
-
-
-// const introCanvas = document.getElementById("intro-canvas");
-// const ctx = introCanvas.getContext("2d");
-// let t = 0;
-
-// function animateIntro() {
-//   const w = introCanvas.width = 300;
-//   const h = introCanvas.height = 300;
-//   ctx.clearRect(0, 0, w, h);
-//   ctx.fillStyle = "rgba(255,255,255,0.1)";
-//   ctx.beginPath();
-//   const r = 100 + 20 * Math.sin(t);
-//   ctx.arc(w / 2, h / 2, r, 0, Math.PI * 2);
-//   ctx.fill();
-//   ctx.fillStyle = "#00bcd4";
-//   ctx.font = "20px sans-serif";
-//   ctx.textAlign = "center";
-//   ctx.fillText("Maghribinaya", w / 2, h / 2 + 5);
-//   t += 0.05;
-//   requestAnimationFrame(animateIntro);
-// }
-// animateIntro();
-
+// --- START BUTTON ---
 document.getElementById("start-btn").addEventListener("click", async () => {
-  const startScreen = document.getElementById("start-screen");
-  startScreen.classList.add("fade-out");
+    const startScreen = document.getElementById("start-screen");
+    startScreen.classList.add("fade-out");
 
-  // Wait for fade animation to finish
-  setTimeout(async () => {
-    startScreen.style.display = "none";
+    setTimeout(async () => {
+        startScreen.style.display = "none";
 
-    // Show your AR containers
-    document.getElementById("webcam-container").style.display = "block";
-    document.getElementById("model-container").style.display = "block";
-    document.getElementById("label").style.display = "block";
+        document.getElementById("webcam-container").style.display = "block";
+        document.getElementById("model-container").style.display = "block";
+        document.getElementById("label").style.display = "block";
 
-    // Launch the AR experience
-    await init();
-  }, 1000); // matches the CSS transition duration
+        await init();
+    }, 1000);
 });
