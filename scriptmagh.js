@@ -16,13 +16,31 @@ async function init() {
 const screenWidth = window.innerWidth;
 const screenHeight = window.innerHeight;
 
-webcam = new tmImage.Webcam(screenWidth, screenHeight, false);
+webcam = new tmImage.Webcam(window.innerWidth, window.innerHeight, false);
 
+// FORCE the video feed to match the screen exactly
 await webcam.setup({
   facingMode: { ideal: "environment" },
-  width: { ideal: screenWidth },
-  height: { ideal: screenHeight }
+  video: {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    aspectRatio: window.innerWidth / window.innerHeight
+  }
 });
+
+await webcam.play();
+
+// Remove TM constraints
+webcam.webcam.width = window.innerWidth;
+webcam.webcam.height = window.innerHeight;
+webcam.canvas.width = window.innerWidth;
+webcam.canvas.height = window.innerHeight;
+
+// Force full screen display
+webcam.canvas.style.width = "100vw";
+webcam.canvas.style.height = "100vh";
+webcam.canvas.style.objectFit = "cover"; // better than fill
+
 
 await webcam.play();
 
