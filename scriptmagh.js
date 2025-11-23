@@ -28,6 +28,12 @@ await webcam.play();
 
 webcam.canvas.width = screenWidth;
 webcam.canvas.height = screenHeight;
+
+// Force full-screen video feed on mobile
+webcam.canvas.style.width = "100vw";
+webcam.canvas.style.height = "100vh";
+webcam.canvas.style.objectFit = "fill";
+
 webcam.webcam.setAttribute("playsinline", true);
 document.getElementById("webcam-container").appendChild(webcam.canvas);
 
