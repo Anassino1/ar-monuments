@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>AR Monuments</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- TensorFlow.js -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.3/dist/teachablemachine-image.min.js"></script>
@@ -21,7 +23,7 @@
   width: 100vw;
   height: 100vh;
   background-image: url("images/a.png");
-  background-size: contain; 
+  background-size: cover; 
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
@@ -100,16 +102,16 @@
   pointer-events: none;
 }
 
-        html, body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            height: 100%;
-            width: 100%;
-            background: black;
-        }
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: black;
+}
 
-        #webcam-container,
+#webcam-container,
 #model-container {
   position: fixed;
   top: 0;
@@ -121,14 +123,14 @@
 }
 
 #webcam-container canvas,
-#model-container canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+#model-container canvas,
+canvas {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    display: block;
 }
+
 
         canvas {
             width: 100%;
