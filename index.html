@@ -122,22 +122,23 @@ html, body {
   z-index: 1;
 }
 
+#webcam-container video,
 #webcam-container canvas,
-#model-container canvas,
-canvas {
+#model-container canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    
     width: 100vw;
     height: 100vh;
-    object-fit: fill;
+
+    object-fit: cover !important;     /* Fix black bottom */
+    object-position: center center;
     display: block;
 }
 
 
-        canvas {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* fills screen without scroll */
-            display: block;
-        }
+/*  */
 
         #label {
             position: fixed;
