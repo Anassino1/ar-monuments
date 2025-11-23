@@ -18,25 +18,21 @@ async function init() {
     });
     await webcam.play();
 
-    // Make video and canvas cover screen
-    const video = webcam.webcam;
-    const canvas = webcam.canvas;
-
-    [video, canvas].forEach(el => {
-        el.style.position = "absolute";
-        el.style.top = "0";
-        el.style.left = "0";
-        el.style.width = "100%";
-        el.style.height = "100%";
-        el.style.objectFit = "cover";
-        el.style.objectPosition = "center center";
-        el.setAttribute("playsinline", true);
-    });
-
+    // Only append the canvas
     const container = document.getElementById("webcam-container");
     container.innerHTML = "";
-    container.appendChild(video);
-    container.appendChild(canvas);
+    container.appendChild(webcam.canvas);
+
+    // Style canvas for full screen
+    const canvas = webcam.canvas;
+    canvas.style.position = "absolute";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.objectFit = "cover";
+    canvas.style.objectPosition = "center center";
+    canvas.setAttribute("playsinline", true);
 
     // Initialize Three.js
     initThreeJS();
@@ -57,14 +53,18 @@ function onWindowResize() {
 
     webcam.canvas.width = window.innerWidth;
     webcam.canvas.height = window.innerHeight;
-    webcam.webcam.width = window.innerWidth;
-    webcam.webcam.height = window.innerHeight;
 }
 
 // --- THREE.JS SETUP ---
 function initThreeJS() {
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    );
     camera.position.z = 3;
 
     renderer = new THREE.WebGLRenderer({ alpha: true });
