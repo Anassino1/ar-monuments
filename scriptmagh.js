@@ -190,7 +190,7 @@ function showModel(className) {
         currentModel = gltf.scene;
         currentModel.scale.set(1, 1, 1);
         if(className === "Koutoubia"){
-        currentModel.scale.set(0.5, 0.5, 0.5); // smaller
+        currentModel.scale.set(0.3, 0.3, 0.3); // smaller
     } else {
         currentModel.scale.set(1, 1, 1); // default size
     }
