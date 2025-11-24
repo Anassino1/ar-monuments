@@ -1,61 +1,116 @@
 const URL = "./ainaadi/";
 
 let model, webcam;
-let scene, camera, renderer, loader, currentModel, currentClass = null;
+let scene, camera, renderer, loader;
+let currentModel = null;
+let currentClass = null;
 let currentLoadToken = 0;
 
-// --- INIT FUNCTION ---
+/* ---------------------------
+   INIT FUNCTION
+---------------------------- */
 async function init() {
+
     // Load Teachable Machine model
     model = await tmImage.load(URL + "model.json", URL + "metadata.json");
     document.getElementById("label").innerText = "Model loaded!";
 
-    // Webcam setup
+    // Setup webcam
+    await setupWebcam();
+
+    // Initialize 3D renderer
+    initThreeJS();
+
+    // Resize + orientation listener
+    window.addEventListener("resize", onWindowResize);
+    window.addEventListener("orientationchange", onWindowResize);
+
+    // Start loop
+    requestAnimationFrame(loop);
+}
+
+/* ---------------------------
+   SETUP WEBCAM (supports resize)
+---------------------------- */
+async function setupWebcam() {
+
+    if (webcam) {
+        try { await webcam.stop(); } catch (e) {}
+    }
+
     webcam = new tmImage.Webcam(window.innerWidth, window.innerHeight, false);
+
     await webcam.setup({
         facingMode: { ideal: "environment" },
         video: { width: window.innerWidth, height: window.innerHeight }
     });
+
     await webcam.play();
 
-    // Only append the canvas
     const container = document.getElementById("webcam-container");
     container.innerHTML = "";
     container.appendChild(webcam.canvas);
 
-    // Style canvas for full screen
-    const canvas = webcam.canvas;
-    canvas.style.position = "absolute";
-    canvas.style.top = "0";
-    canvas.style.left = "0";
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
-    canvas.style.objectFit = "cover";
-    canvas.style.objectPosition = "center center";
-    canvas.setAttribute("playsinline", true);
-
-    // Initialize Three.js
-    initThreeJS();
-
-    // Handle resizing
-    window.addEventListener("resize", onWindowResize);
-    window.addEventListener("orientationchange", onWindowResize);
-
-    // Start AR loop
-    window.requestAnimationFrame(loop);
+    webcam.canvas.style.width = "100vw";
+    webcam.canvas.style.height = "100vh";
+    webcam.canvas.style.objectFit = "cover";
 }
 
-// --- RESIZE HANDLER ---
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+/* ---------------------------
+   RESIZE HANDLER
+---------------------------- */
+let resizeTimeout = null;
 
-    webcam.canvas.width = window.innerWidth;
-    webcam.canvas.height = window.innerHeight;
+async function onWindowResize() {
+
+    if (resizeTimeout) clearTimeout(resizeTimeout);
+
+    // Delay the resize so it doesn't trigger 10 times
+    resizeTimeout = setTimeout(async () => {
+
+        const W = window.innerWidth;
+        const H = window.innerHeight;
+
+        // STOP OLD STREAM
+        if (webcam && webcam.webcam && webcam.webcam.stream) {
+            webcam.webcam.stream.getTracks().forEach(t => t.stop());
+        }
+
+        // REQUEST A NEW HIGH-RES STREAM
+        const newStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: "environment",
+                width: { ideal: W },
+                height: { ideal: H }
+            }
+        });
+
+        // ASSIGN NEW STREAM TO THE TM WEBCAM VIDEO
+        webcam.webcam.video.srcObject = newStream;
+
+        // Wait for video to resize properly
+        await webcam.webcam.video.play();
+
+        // Fix canvas size
+        webcam.canvas.width = W;
+        webcam.canvas.height = H;
+        webcam.canvas.style.width = "100vw";
+        webcam.canvas.style.height = "100vh";
+
+        // Resize ThreeJS
+        renderer.setSize(W, H);
+        camera.aspect = W / H;
+        camera.updateProjectionMatrix();
+
+    }, 200);
 }
 
-// --- THREE.JS SETUP ---
+
+
+
+/* ---------------------------
+   THREE.JS SETUP
+---------------------------- */
 function initThreeJS() {
     scene = new THREE.Scene();
 
@@ -73,26 +128,29 @@ function initThreeJS() {
 
     loader = new THREE.GLTFLoader();
 
-    const light = new THREE.AmbientLight(0xffffff, 2);
-    scene.add(light);
+    scene.add(new THREE.AmbientLight(0xffffff, 2));
 }
 
-// --- MAIN LOOP ---
+/* ---------------------------
+   MAIN LOOP
+---------------------------- */
 async function loop() {
     webcam.update();
     await predict();
     renderer.render(scene, camera);
-    window.requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
 }
 
-// --- PREDICTION ---
+/* ---------------------------
+   PREDICTION
+---------------------------- */
 async function predict() {
     const prediction = await model.predict(webcam.canvas);
-    const highest = prediction.reduce((a, b) => (a.probability > b.probability ? a : b));
+    const highest = prediction.reduce((a, b) => a.probability > b.probability ? a : b);
 
     if (highest.probability > 0.6) {
         document.getElementById("label").innerText = `Detected: ${highest.className}`;
-        if (!currentModel || highest.className !== currentClass) {
+        if (currentClass !== highest.className) {
             currentClass = highest.className;
             showModel(currentClass);
         }
@@ -103,62 +161,60 @@ async function predict() {
     }
 }
 
-// --- LOAD 3D MODEL ---
+/* ---------------------------
+   LOAD 3D MODEL
+---------------------------- */
 function showModel(className) {
     clearModel();
-    currentClass = className;
-    const thisLoadToken = ++currentLoadToken;
+    const loadToken = ++currentLoadToken;
 
     let modelPath = null;
+
     switch (className) {
-        case "Koutoubia": 
-            modelPath = "https://anassino1.github.io/ar-monuments/models/koutoubia.glb"; 
+        case "Koutoubia":
+            modelPath = "https://anassino1.github.io/ar-monuments/models/koutoubia.glb";
             break;
-        case "Hassan Tower": 
-            modelPath = "https://anassino1.github.io/ar-monuments/models/hassan_tower.glb"; 
+        case "Hassan Tower":
+            modelPath = "https://anassino1.github.io/ar-monuments/models/hassan_tower.glb";
             break;
-        case "This object isn't part of Maghribinaya's monuments": 
-            modelPath = "https://anassino1.github.io/ar-monuments/models/koutoubia.glb"; 
-            break;
-        default: 
-            console.warn("No model defined for:", className); 
+        default:
             return;
     }
 
-    loader.load(
-        modelPath,
-        (gltf) => {
-            if (thisLoadToken !== currentLoadToken) return; // ignore outdated loads
-            currentModel = gltf.scene;
-            currentModel.name = className;
-            currentModel.scale.set(1, 1, 1);
-            currentModel.position.set(0, -1, 0);
-            scene.add(currentModel);
-        },
-        undefined,
-        (error) => console.error("Error loading model:", error)
-    );
+    loader.load(modelPath, gltf => {
+        if (loadToken !== currentLoadToken) return;
+
+        currentModel = gltf.scene;
+        currentModel.scale.set(1, 1, 1);
+        currentModel.position.set(0, -1, 0);
+        scene.add(currentModel);
+    });
 }
 
-// --- CLEAR CURRENT MODEL ---
+/* ---------------------------
+   CLEAR MODEL
+---------------------------- */
 function clearModel() {
     if (!currentModel) return;
+
     scene.remove(currentModel);
-    currentModel.traverse((child) => {
+
+    currentModel.traverse(child => {
         if (child.geometry) child.geometry.dispose();
         if (child.material) {
-            if (Array.isArray(child.material)) {
-                child.material.forEach(m => m.dispose());
-            } else {
-                child.material.dispose();
-            }
+            if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+            else child.material.dispose();
         }
     });
+
     currentModel = null;
 }
 
-// --- START BUTTON ---
+/* ---------------------------
+   START BUTTON
+---------------------------- */
 document.getElementById("start-btn").addEventListener("click", async () => {
+
     const startScreen = document.getElementById("start-screen");
     startScreen.classList.add("fade-out");
 
@@ -170,5 +226,5 @@ document.getElementById("start-btn").addEventListener("click", async () => {
         document.getElementById("label").style.display = "block";
 
         await init();
-    }, 1000);
+    }, 800);
 });
