@@ -138,6 +138,9 @@ async function loop() {
     webcam.update();
     await predict();
     renderer.render(scene, camera);
+    if (currentModel) {
+    currentModel.rotation.y += 0.01; // smooth rotation around Y-axis
+}
     requestAnimationFrame(loop);
 }
 
@@ -186,7 +189,13 @@ function showModel(className) {
 
         currentModel = gltf.scene;
         currentModel.scale.set(1, 1, 1);
-        currentModel.position.set(0, -1, 0);
+        if(className === "Koutoubia"){
+        currentModel.scale.set(0.5, 0.5, 0.5); // smaller
+    } else {
+        currentModel.scale.set(1, 1, 1); // default size
+    }
+
+        currentModel.position.set(0, 0, 0);
         scene.add(currentModel);
     });
 }
